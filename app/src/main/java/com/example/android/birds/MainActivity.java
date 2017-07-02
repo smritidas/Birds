@@ -1,5 +1,6 @@
 package com.example.android.birds;
 
+import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -153,6 +154,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //Get high score from shared preferences
         //If this score is great than the high score, update SharedPreferences
         //Display high score and this run's score
+        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+        int highScore = prefs.getInt("highScore", 0);
+
+        if(countClicked > highScore){
+            highScore = countClicked;
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putInt("highScore", highScore);
+            editor.commit();
+        }
+
+        Toast.makeText(this, "Your score: " + countClicked + "\nHigh score: " + highScore,
+                Toast.LENGTH_LONG).show();
     }
 
 }
