@@ -24,7 +24,6 @@ import static android.R.attr.animation;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, Animation.AnimationListener{
 
-    //TODO(1) Define fields
     final int NUMBER_OF_BURDS = 10;
     final int MINIMUM_DURATION = 500;
     final int MAXIMUM_ADDITIONAL_DURATION = 1000;
@@ -73,10 +72,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //Add a burd in some random place
         long duration = MINIMUM_DURATION + random.nextInt(MAXIMUM_ADDITIONAL_DURATION);
 
+        //layout params stores information on how a component should appear in a layout
+
         ActionBar.LayoutParams params = new
                 ActionBar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
+        //the left edge is no further than 3/ths away from the left
         params.leftMargin = random.nextInt(displayWidth) * 3 / 4;
+
+        //no lower than 5/8ths down the screen
         params.topMargin = random.nextInt(displayheight) * 5 /8;
 
         ImageView burd = new ImageView(this);
@@ -87,8 +91,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         layout.addView(burd);
 
+        //AlphaAnimation - fades into view or fades out
+        //0.0 is complete transparence, 1.0 is complete opaqueness
+
         AlphaAnimation animation = new AlphaAnimation(0.0F, 1.0F);
         animation.setDuration(duration);
+
+        //respond to the animation's progress in the main activity class
         animation.setAnimationListener((this));
 
         //At first, the Burd is invisible
@@ -114,6 +123,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+    //If less than 10, the gameloop starts again
     public void onAnimationEnd(Animation animation) {
         if(++countShown < NUMBER_OF_BURDS){
             showABurd(); //Again!
@@ -154,14 +164,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //Get high score from shared preferences
         //If this score is great than the high score, update SharedPreferences
         //Display high score and this run's score
+        //MODE_PRIVATE means that no other app can read from or write to
         SharedPreferences prefs = getPreferences(MODE_PRIVATE);
-        int highScore = prefs.getInt("highScore", 0);
+        int highScore = prefs.getInt("highScore", 0); //this lookigs for values from an existing set of share preferences
 
         if(countClicked > highScore){
             highScore = countClicked;
             SharedPreferences.Editor editor = prefs.edit();
             editor.putInt("highScore", highScore);
-            editor.commit();
+            editor.commit(); // finish adding values
         }
 
         Toast.makeText(this, "Your score: " + countClicked + "\nHigh score: " + highScore,
